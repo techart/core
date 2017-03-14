@@ -1,0 +1,20 @@
+{
+    "name": "techart/core",
+    "description": "Базовые объекты",
+    "version" : "3.0.4",
+    "authors": [
+        {
+            "name": "Techart",
+            "homepage": "http://web-techart.ru/"
+        }
+    ],
+    "autoload" : {
+        "psr-4": {
+            "Techart\\Core\\": "src/Core"
+        },
+        "classmap": ["src/Core/Interfaces.php", "src/Core/Exceptions.php"]
+    },
+    "require": {
+        "PHP": ">=5.5"
+    }
+}
