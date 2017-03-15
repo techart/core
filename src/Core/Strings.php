@@ -53,7 +53,7 @@ class Strings
 	public static function concat()
 	{
 		$args = func_get_args();
-		return implode('', Core::normalize_args($args));
+		return implode('', \Techart\Core::normalize_args($args));
 	}
 
 	/**
@@ -63,7 +63,7 @@ class Strings
 	 */
 	public static function concat_with()
 	{
-		$args = Core::normalize_args(func_get_args());
+		$args = \Techart\Core::normalize_args(func_get_args());
 		return implode((string)array_shift($args), $args);
 	}
 
@@ -152,7 +152,7 @@ class Strings
 	/**
 	 * Выполняет форматирование строки
 	 *
-	 * @return sprintf
+	 * @return string
 	 */
 	public static function format()
 	{

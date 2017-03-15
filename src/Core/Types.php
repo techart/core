@@ -78,7 +78,7 @@ class Types
 	 */
 	public static function is_iterable(&$object)
 	{
-		return is_array($object) || $object instanceof Traversable;
+		return is_array($object) || $object instanceof \Traversable;
 	}
 
 	/**
@@ -104,9 +104,9 @@ class Types
 		//return $object_class instanceof $ancestor_class;
 
 		//TODO: remove:
-		$object_reflection = new ReflectionClass($object_class);
+		$object_reflection = new \ReflectionClass($object_class);
 
-		return Core::with($ancestor_reflection = new ReflectionClass($ancestor_class))->isInterface() ?
+		return \Techart\Core::with($ancestor_reflection = new \ReflectionClass($ancestor_class))->isInterface() ?
 			$object_reflection->implementsInterface($ancestor_class) :
 			$object_reflection->isSubclassOf($ancestor_reflection);
 	}
@@ -177,11 +177,11 @@ class Types
 	public static function reflection_for($object)
 	{
 		if (Types::is_string($object)) {
-			return new ReflectionClass(self::real_class_name_for($object));
+			return new \ReflectionClass(self::real_class_name_for($object));
 		}
 
 		if (Types::is_object($object)) {
-			return new ReflectionObject($object);
+			return new \ReflectionObject($object);
 		}
 
 		throw new \Techart\Core\InvalidArgumentTypeException('object', $object);

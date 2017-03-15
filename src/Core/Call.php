@@ -46,9 +46,6 @@ class Call implements InvokeInterface
 	public function invoke($args = array())
 	{
 		$args = $this->get_args($args);
-		if ($this->autoload && is_string($this->call[0])) {
-			Core::autoload(Types::virtual_class_name_for($this->call[0]), $this->call[0]);
-		}
 		if ($this->enable_cache) {
 			$key = serialize($args);
 			if (isset($this->cache[$key])) {

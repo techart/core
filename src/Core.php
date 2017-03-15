@@ -30,20 +30,20 @@ class Core
 	
 	public static function equals($a, $b)
 	{
-		if ($a instanceof Core_EqualityInterface) {
+		if ($a instanceof \Techart\Core\EqualityInterface) {
 			return $a->equals($b);
 		}
-		if ($b instanceof Core_EqualityInterface) {
+		if ($b instanceof \Techart\Core\EqualityInterface) {
 			return $b->equals($a);
 		}
 
-		if ((($a instanceof stdClass) && ($b instanceof stdClass))) {
+		if ((($a instanceof \stdClass) && ($b instanceof \stdClass))) {
 			$a = (array)clone $a;
 			$b = (array)clone $b;
 		}
 
 		if ((is_array($a) && is_array($b)) ||
-			(($a instanceof ArrayObject) && ($b instanceof ArrayObject))
+			(($a instanceof \ArrayObject) && ($b instanceof \ArrayObject))
 		) {
 
 			if (count($a) != count($b)) {
@@ -65,11 +65,11 @@ class Core
 	 *
 	 * @param  $values
 	 *
-	 * @return stdClass
+	 * @return \stdClass
 	 */
 	public static function object($values = array())
 	{
-		$r = new stdClass();
+		$r = new \stdClass();
 		foreach ($values as $k => $v)
 			$r->$k = $v;
 		return $r;
@@ -80,7 +80,7 @@ class Core
 	 *
 	 * @param  $values
 	 *
-	 * @return ArrayObject
+	 * @return \ArrayObject
 	 */
 	public static function hash($values = array())
 	{
@@ -91,7 +91,7 @@ class Core
 	 * @param        $target
 	 * @param string $method
 	 *
-	 * @return Core_Call
+	 * @return \Techart\Core\Call
 	 */
 	public static function call($target, $method)
 	{
@@ -109,12 +109,12 @@ class Core
 	{
 		if (is_string($call) && strpos($call, '::') !== false) {
 			$parts = explode('::', $call);
-			$virtual = Core_Types::virtual_class_name_for($parts[0]);
-			$real = Core_Types::real_class_name_for($parts[0]);
+			$virtual = \Techart\Core\Types::virtual_class_name_for($parts[0]);
+			$real = \Techart\Core\Types::real_class_name_for($parts[0]);
 			Core::autoload($virtual, $real);
 			$call = array($real, $parts[1]);
 		}
-		if ($call instanceof Core_InvokeInterface) {
+		if ($call instanceof \Techart\Core\InvokeInterface) {
 			return $call->invoke($parms);
 		}
 		return call_user_func_array($call, $parms);
@@ -254,9 +254,9 @@ class Core
 	{
 		self::push_dir();
 		$class = self::replace_class($class);
-		$real_name = Core_Types::real_class_name_for($class);
+		$real_name = \Techart\Core\Types::real_class_name_for($class);
 		self::autoload($class, $real_name);
-		$reflection = Core_Types::reflection_for($real_name);
+		$reflection = \Techart\Core\Types::reflection_for($real_name);
 		self::pop_dir();
 		return $reflection->getConstructor() ?
 			$reflection->newInstanceArgs($parms) :
@@ -266,7 +266,7 @@ class Core
 	public static function replace_class($class)
 	{
 		if (!empty(self::$replace_classes[$class])
-			&& Core_Types::is_subclass_of($class, self::$replace_classes[$class])
+			&& \Techart\Core\Types::is_subclass_of($class, self::$replace_classes[$class])
 		) {
 			return self::$replace_classes[$class];
 		} else {
@@ -308,10 +308,10 @@ class Core
 		if (!self::$autoload) {
 			return;
 		}
-		$real_name = !is_null($real_name) ? $real_name : Core_Types::real_class_name_for($class);
+		$real_name = !is_null($real_name) ? $real_name : \Techart\Core\Types::real_class_name_for($class);
 		if (!class_exists($real_name, false)) {
-			$module = Core_Types::module_name_for($class);
-			$module_real = Core_Types::real_class_name_for($module);
+			$module = \Techart\Core\Types::module_name_for($class);
+			$module_real = \Techart\Core\Types::real_class_name_for($module);
 			$files = array();
 			foreach (array('class' => $class, 'module' => $module) as $key => $value) {
 				$file = self::cached_modules($value);
@@ -353,8 +353,8 @@ class Core
 	{
 		$result = array();
 		if (($path_var = getenv(self::PATH_VARIABLE)) !== false) {
-			foreach (Core_Strings::split_by(';', $path_var) as $rule)
-				if ($m = Core_Regexps::match_with_results('{^([-A-Za-z0-9*][A-Za-z0-9_.]*):(.+)$}', $rule)) {
+			foreach (\Techart\Core\Strings::split_by(';', $path_var) as $rule)
+				if ($m = \Techart\Core\Regexps::match_with_results('{^([-A-Za-z0-9*][A-Za-z0-9_.]*):(.+)$}', $rule)) {
 					$result[$m[1]] = $m[2];
 				}
 		}

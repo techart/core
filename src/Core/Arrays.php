@@ -270,12 +270,5 @@ class Arrays
 		}
 		return $result;
 	}
-
-	//TODO: рфекторинг и вынесение в отдельный модуль
-	public static function create_tree($flat, $options = array())
-	{
-		Core::load('Tree');
-		return Tree::create_tree($flat, $options);
-	}
 }
 
