@@ -5,56 +5,56 @@ namespace Techart\Core;
 class Exception extends \Exception implements PropertyAccessInterface
 {
 
-	/**
-	 * Возвращает значение свойства
-	 *
-	 * @param string $property
-	 *
-	 * @return mixed
-	 */
-	public function __get($property)
-	{
-		return isset($this->$property) ? $this->$property : null;
-	}
+    /**
+     * Возвращает значение свойства
+     *
+     * @param string $property
+     *
+     * @return mixed
+     */
+    public function __get($property)
+    {
+        return isset($this->$property) ? $this->$property : null;
+    }
 
-	/**
-	 * Устанавливает значение свойства
-	 *
-	 * @param string $property
-	 * @param        $value
-	 *
-	 * @return mixed
-	 */
-	public function __set($property, $value)
-	{
-		throw isset($this->$property) ?
-			new ReadOnlyPropertyException($property) :
-			new MissingPropertyException($property);
-	}
+    /**
+     * Устанавливает значение свойства
+     *
+     * @param string $property
+     * @param        $value
+     *
+     * @return mixed
+     */
+    public function __set($property, $value)
+    {
+        throw isset($this->$property) ?
+            new ReadOnlyPropertyException($property) :
+            new MissingPropertyException($property);
+    }
 
-	/**
-	 * Проверяет, установлено ли значение свойства
-	 *
-	 * @param string $property
-	 *
-	 * @return boolean
-	 */
-	public function __isset($property)
-	{
-		return isset($this->$property);
-	}
+    /**
+     * Проверяет, установлено ли значение свойства
+     *
+     * @param string $property
+     *
+     * @return boolean
+     */
+    public function __isset($property)
+    {
+        return isset($this->$property);
+    }
 
-	/**
-	 * Удаляет значение свойства
-	 *
-	 * @param string $property
-	 */
-	public function __unset($property)
-	{
-		throw isset($this->$property) ?
-			new ReadOnlyPropertyException($property) :
-			new MissingPropertyException($property);
-	}
+    /**
+     * Удаляет значение свойства
+     *
+     * @param string $property
+     */
+    public function __unset($property)
+    {
+        throw isset($this->$property) ?
+            new ReadOnlyPropertyException($property) :
+            new MissingPropertyException($property);
+    }
 
 }
 
@@ -84,21 +84,21 @@ class NotImplementedException extends Exception
 class MissingKeyIntoArrayException extends Exception
 {
 
-	protected $arg_array_name;
-	protected $arg_key_name;
+    protected $arg_array_name;
+    protected $arg_key_name;
 
-	/**
-	 * Конструктор
-	 *
-	 * @params string $array_name Имя массива
-	 * @params string $key_name Имя отсутствующего ключа
-	 */
-	public function __construct($array_name, $key_name)
-	{
-		$this->arg_array_name = $array_name;
-		$this->arg_key_name = $key_name;
-		parent::__construct("Missing key '{$this->arg_key_name}' into array '{$this->arg_array_name}'");
-	}
+    /**
+     * Конструктор
+     *
+     * @params string $array_name Имя массива
+     * @params string $key_name Имя отсутствующего ключа
+     */
+    public function __construct($array_name, $key_name)
+    {
+        $this->arg_array_name = $array_name;
+        $this->arg_key_name = $key_name;
+        parent::__construct("Missing key '{$this->arg_key_name}' into array '{$this->arg_array_name}'");
+    }
 
 }
 
@@ -118,21 +118,21 @@ class MissingKeyIntoArrayException extends Exception
 class InvalidArgumentTypeException extends TypeException
 {
 
-	protected $arg_name;
-	protected $arg_type;
+    protected $arg_name;
+    protected $arg_type;
 
-	/**
-	 * Конструктор
-	 *
-	 * @param string $name
-	 * @param        $arg
-	 */
-	public function __construct($name, $arg)
-	{
-		$this->arg_name = (string)$name;
-		$this->arg_type = (string)gettype($arg);
-		parent::__construct("Invalid argument type for '$this->arg_name': ($this->arg_type)");
-	}
+    /**
+     * Конструктор
+     *
+     * @param string $name
+     * @param        $arg
+     */
+    public function __construct($name, $arg)
+    {
+        $this->arg_name = (string)$name;
+        $this->arg_type = (string)gettype($arg);
+        parent::__construct("Invalid argument type for '$this->arg_name': ($this->arg_type)");
+    }
 
 }
 
@@ -142,19 +142,19 @@ class InvalidArgumentTypeException extends TypeException
 class InvalidArgumentValueException extends Exception
 {
 
-	protected $arg_name;
-	protected $arg_value;
+    protected $arg_name;
+    protected $arg_value;
 
-	/**
-	 * @param string $name
-	 * @param        $value
-	 */
-	public function __construct($name, $value)
-	{
-		$this->arg_name = (string)$name;
-		$this->arg_value = $value;
-		parent::__construct("Invalid argument value for '$this->arg_name': ($this->arg_value)");
-	}
+    /**
+     * @param string $name
+     * @param        $value
+     */
+    public function __construct($name, $value)
+    {
+        $this->arg_name = (string)$name;
+        $this->arg_value = $value;
+        parent::__construct("Invalid argument value for '$this->arg_name': ($this->arg_value)");
+    }
 
 }
 
@@ -181,18 +181,18 @@ class ObjectAccessException extends Exception
 class MissingPropertyException extends ObjectAccessException
 {
 
-	protected $property;
+    protected $property;
 
-	/**
-	 * Конструктор
-	 *
-	 * @param string $property
-	 */
-	public function __construct($property)
-	{
-		$this->property = (string)$property;
-		parent::__construct("Missing property: $this->property");
-	}
+    /**
+     * Конструктор
+     *
+     * @param string $property
+     */
+    public function __construct($property)
+    {
+        $this->property = (string)$property;
+        parent::__construct("Missing property: $this->property");
+    }
 
 }
 
@@ -210,18 +210,18 @@ class MissingPropertyException extends ObjectAccessException
 class MissingIndexedPropertyException extends ObjectAccessException
 {
 
-	protected $index;
+    protected $index;
 
-	/**
-	 * Конструктор
-	 *
-	 * @param  $index
-	 */
-	public function __construct($index)
-	{
-		$this->index = (string)$index;
-		parent::__construct("Missing indexed property for index $this->index");
-	}
+    /**
+     * Конструктор
+     *
+     * @param  $index
+     */
+    public function __construct($index)
+    {
+        $this->index = (string)$index;
+        parent::__construct("Missing indexed property for index $this->index");
+    }
 
 }
 
@@ -238,18 +238,18 @@ class MissingIndexedPropertyException extends ObjectAccessException
 class MissingMethodException extends ObjectAccessException
 {
 
-	protected $method;
+    protected $method;
 
-	/**
-	 * Конструктор
-	 *
-	 * @param string $method
-	 */
-	public function __construct($method)
-	{
-		$this->method = (string)$method;
-		parent::__construct("Missing method: $this->method");
-	}
+    /**
+     * Конструктор
+     *
+     * @param string $method
+     */
+    public function __construct($method)
+    {
+        $this->method = (string)$method;
+        parent::__construct("Missing method: $this->method");
+    }
 
 }
 
@@ -268,18 +268,18 @@ class MissingMethodException extends ObjectAccessException
 class ReadOnlyPropertyException extends ObjectAccessException
 {
 
-	protected $property;
+    protected $property;
 
-	/**
-	 * Конструктор
-	 *
-	 * @param string $property
-	 */
-	public function __construct($property)
-	{
-		$this->property = (string)$property;
-		parent::__construct("The property is read-only: $this->property");
-	}
+    /**
+     * Конструктор
+     *
+     * @param string $property
+     */
+    public function __construct($property)
+    {
+        $this->property = (string)$property;
+        parent::__construct("The property is read-only: $this->property");
+    }
 }
 
 /**
@@ -296,18 +296,18 @@ class ReadOnlyPropertyException extends ObjectAccessException
 class ReadOnlyIndexedPropertyException extends ObjectAccessException
 {
 
-	protected $index;
+    protected $index;
 
-	/**
-	 * Конструктор
-	 *
-	 * @param  $index
-	 */
-	public function __construct($index)
-	{
-		$this->index = (string)$index;
-		parent::__construct("The property is read-only for index: $this->index");
-	}
+    /**
+     * Конструктор
+     *
+     * @param  $index
+     */
+    public function __construct($index)
+    {
+        $this->index = (string)$index;
+        parent::__construct("The property is read-only for index: $this->index");
+    }
 
 }
 
@@ -318,18 +318,18 @@ class ReadOnlyIndexedPropertyException extends ObjectAccessException
  */
 class ReadOnlyObjectException extends ObjectAccessException
 {
-	protected $object;
+    protected $object;
 
-	/**
-	 * Конструктор
-	 *
-	 * @param  $object
-	 */
-	public function __construct($object)
-	{
-		$this->object = $object;
-		parent::__construct("Read only object");
-	}
+    /**
+     * Конструктор
+     *
+     * @param  $object
+     */
+    public function __construct($object)
+    {
+        $this->object = $object;
+        parent::__construct("Read only object");
+    }
 
 }
 
@@ -351,18 +351,18 @@ class ReadOnlyObjectException extends ObjectAccessException
 class UndestroyablePropertyException extends ObjectAccessException
 {
 
-	protected $property;
+    protected $property;
 
-	/**
-	 * Конструктор
-	 *
-	 * @param string $property
-	 */
-	public function __construct($property)
-	{
-		$this->property = (string)$property;
-		parent::__construct("Unable to destroy property: $property");
-	}
+    /**
+     * Конструктор
+     *
+     * @param string $property
+     */
+    public function __construct($property)
+    {
+        $this->property = (string)$property;
+        parent::__construct("Unable to destroy property: $property");
+    }
 
 }
 
@@ -373,22 +373,22 @@ class UndestroyablePropertyException extends ObjectAccessException
 class UndestroyableIndexedPropertyException extends ObjectAccessException
 {
 
-	/**
-	 * Название индексного свойства
-	 *
-	 * @var string
-	 */
-	protected $property;
+    /**
+     * Название индексного свойства
+     *
+     * @var string
+     */
+    protected $property;
 
-	/**
-	 * Конструктор
-	 *
-	 * @param string $property имя свойства
-	 */
-	public function __construct($property)
-	{
-		$this->property = (string)$property;
-		parent::__construct("Unable to destroy indexed property: $property");
-	}
+    /**
+     * Конструктор
+     *
+     * @param string $property имя свойства
+     */
+    public function __construct($property)
+    {
+        $this->property = (string)$property;
+        parent::__construct("Unable to destroy indexed property: $property");
+    }
 }
 
