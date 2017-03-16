@@ -1,7 +1,7 @@
 {
     "name": "techart/core",
     "description": "Базовые объекты",
-    "version" : "3.0.8",
+    "version" : "3.0.9",
     "license": "Apache-2.0",
     "authors": [
         {
@@ -13,7 +13,7 @@
         "psr-4": {
             "Techart\\Core\\": "src/Core"
         },
-        "classmap": ["src/Core/Interfaces.php", "src/Core/Exceptions.php"]
+        "classmap": ["src/Core.php", "src/Core/Interfaces.php", "src/Core/Exceptions.php"]
     },
     "require": {
         "PHP": ">=5.5"
