@@ -2,17 +2,111 @@
 
 namespace Techart;
 
+use Techart\Core\ImmutableServiceException;
+use Techart\Core\UndefinedServiceException;
+
 /**
  * Class Core
  * @package Techart
  */
 class Core
 {
-    const PATH_VARIABLE = 'TAO_PATH';
 
     protected static $start_time = 0;
     protected static $base_dir = null;
     protected static $save_dir = null;
+
+    protected static $services = array(
+        'config' => array(
+            'class' => '\\Techart\\Core\\Service\\Config',
+            'options' => array(),
+            'immutable' => false,
+        ),
+        'regexp' => array(
+            'class' => '\\Techart\\Core\\Service\\Regexp',
+            'options' => array(),
+            'immutable' => false,
+        ),
+    );
+
+    /**
+     * @param $name
+     * @param $class
+     * @param array $options
+     * @param null $immutable
+     * @throws ImmutableServiceException
+     */
+    public static function addService($name, $class, $options = array(), $immutable = null)
+    {
+        if (isset($options['immutable']) && is_null($immutable)) {
+            $immutable = $options['immutable'];
+        }
+
+        if (isset(self::$services[$name])) {
+            if (self::$services[$name]['immutable']) {
+                throw new ImmutableServiceException($name);
+            }
+        }
+
+        self::$services[$name] = array(
+            'class' => $class,
+            'options' => $options,
+            'immutable' => $immutable,
+        );
+    }
+
+    /**
+     * @param $name
+     * @param bool|false $rawObject
+     * @return mixed
+     * @throws UndefinedServiceException
+     */
+    public static function get($name, $rawObject = false)
+    {
+        if (!isset(self::$services[$name])) {
+            throw new UndefinedServiceException($name);
+        }
+        if (!isset(self::$services[$name]['object'])) {
+            $class = self::$services[$name]['class'];
+            $service = self::make($class);
+            foreach (self::$services[$name]['options'] as $option => $value) {
+                $service->setOption($option, $value);
+            }
+            $service->init();
+            self::$services[$name]['object'] = $service;
+        }
+        $object = self::$services[$name]['object'];
+        return $rawObject ? $object : $object->service();
+    }
+
+    /**
+     * @param $name
+     * @param $args
+     * @return mixed
+     * @throws UndefinedServiceException
+     */
+    public static function __callStatic($name, $args)
+    {
+        $service = self::get($name, true);
+        return call_user_func_array(array($service, 'service'), $args);
+    }
+
+    /**
+     * @param array $m1
+     * @param array $m2
+     * @return array
+     */
+    public static function mergeArrays(array $m1, array $m2)
+    {
+        foreach ($m2 as $k => $v) {
+            if (isset($m1[$k]) && is_array($m1[$k]) && is_array($v)) {
+                $m1[$k] = self::mergeArrays($m1[$k], $v);
+            } else {
+                $m1[$k] = $v;
+            }
+        }
+        return $m1;
+    }
 
     /**
      *
@@ -286,22 +380,4 @@ class Core
     {
         return (count($args) == 1 && isset($args[0]) && is_array($args[0])) ? $args[0] : $args;
     }
-
-    /**
-     * Выполняет разбор переменной окружения TAO_PATH
-     *
-     * @return array
-     */
-    private static function parse_environment_paths()
-    {
-        $result = array();
-        if (($path_var = getenv(self::PATH_VARIABLE)) !== false) {
-            foreach (\Techart\Core\Strings::split_by(';', $path_var) as $rule)
-                if ($m = \Techart\Core\Regexps::match_with_results('{^([-A-Za-z0-9*][A-Za-z0-9_.]*):(.+)$}', $rule)) {
-                    $result[$m[1]] = $m[2];
-                }
-        }
-        return $result;
-    }
-
 }

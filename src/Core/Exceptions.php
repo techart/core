@@ -392,3 +392,29 @@ class UndestroyableIndexedPropertyException extends ObjectAccessException
     }
 }
 
+class ServiceException extends Exception
+{
+}
+
+class ImmutableServiceException extends ServiceException
+{
+    protected $service;
+
+    public function __construct($service)
+    {
+        $this->service = (string)$service;
+        parent::__construct("Can't redefine immutable service: $service");
+    }
+}
+
+
+class UndefinedServiceException extends ServiceException
+{
+    protected $service;
+
+    public function __construct($service)
+    {
+        $this->service = (string)$service;
+        parent::__construct("Undefined service: $service");
+    }
+}
