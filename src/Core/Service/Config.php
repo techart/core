@@ -116,7 +116,7 @@ class Config extends \Techart\Core\Service
 
         $values = $this->scopes[$scope];
 
-        while ($m = TAO::regexp('{^([^/]+)/(.+)$}', $name)) {
+        while (preg_match('{^([^/]+)/(.+)$}', $name, $m)) {
             $p = trim($m[1]);
             if (isset($values[$p]) && is_array($values[$p])) {
                 $name = trim($m[2]);

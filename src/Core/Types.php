@@ -115,32 +115,21 @@ class Types
 	 * Возвращает имя класса для объекта
 	 *
 	 * @param         $object
-	 * @param boolean $virtual
 	 *
 	 * @return string
 	 */
-	static function class_name_for($object, $virtual = false)
+	static function class_name_for($object)
 	{
-		$class_name = is_object($object) ?
+		$className = is_object($object) ?
 			get_class($object) : (
 			is_string($object) ? $object : null);
 
-		return $class_name ? (
-		(boolean)$virtual ?
-			str_replace('_', '.', $class_name) :
-			str_replace('.', '_', $class_name)) : null;
-	}
+		if (!$className) {
+			return null;
+		}
 
-	/**
-	 * Возвращает виртуальное имя класса для заданного объекта
-	 *
-	 * @param  $object
-	 *
-	 * @return string
-	 */
-	public static function virtual_class_name_for($object)
-	{
-		return self::class_name_for($object, true);
+		$className = str_replace('.', '\\', trim($className, '.'));
+		return '\\'. $className;
 	}
 
 	/**

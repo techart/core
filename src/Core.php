@@ -3,6 +3,7 @@
 namespace Techart;
 
 use Techart\Core\ImmutableServiceException;
+use Techart\Core\Service;
 use Techart\Core\UndefinedServiceException;
 
 /**
@@ -11,48 +12,55 @@ use Techart\Core\UndefinedServiceException;
  */
 class Core
 {
+    public static $appLibPath = '../app/lib';
 
     protected static $start_time = 0;
     protected static $base_dir = null;
     protected static $save_dir = null;
+    protected static $container = null;
 
-    protected static $services = array(
-        'config' => array(
-            'class' => '\\Techart\\Core\\Service\\Config',
-            'options' => array(),
-            'immutable' => false,
-        ),
-        'regexp' => array(
-            'class' => '\\Techart\\Core\\Service\\Regexp',
-            'options' => array(),
-            'immutable' => false,
-        ),
-    );
+    /**
+     *
+     */
+    public static function init()
+    {
+        spl_autoload_register(array(self, 'autoloadAppClasses'));
+    }
+
+    /**
+     * @param $name
+     */
+    public static function autoLoadAppClasses($name)
+    {
+        $path = self::$appLibPath;
+        if ($name == 'App') {
+            include_once("{$path}/App.php");
+        } elseif (strpos($name, 'App\\') === 0) {
+            $name = str_replace('\\', '/', substr($name, 4));
+            include_once("{$path}/{$name}.php");
+        }
+    }
+
+    /**
+     * @return null|object
+     */
+    public static function container()
+    {
+        if (is_null(self::$container)) {
+            self::$container = self::make('Techart.Core.Container');
+        }
+        return self::$container;
+    }
 
     /**
      * @param $name
      * @param $class
      * @param array $options
-     * @param null $immutable
      * @throws ImmutableServiceException
      */
-    public static function addService($name, $class, $options = array(), $immutable = null)
+    public static function addService($name, $class, $options = array())
     {
-        if (isset($options['immutable']) && is_null($immutable)) {
-            $immutable = $options['immutable'];
-        }
-
-        if (isset(self::$services[$name])) {
-            if (self::$services[$name]['immutable']) {
-                throw new ImmutableServiceException($name);
-            }
-        }
-
-        self::$services[$name] = array(
-            'class' => $class,
-            'options' => $options,
-            'immutable' => $immutable,
-        );
+        return self::container()->add($name, $class, $options);
     }
 
     /**
@@ -63,20 +71,16 @@ class Core
      */
     public static function get($name, $rawObject = false)
     {
-        if (!isset(self::$services[$name])) {
-            throw new UndefinedServiceException($name);
-        }
-        if (!isset(self::$services[$name]['object'])) {
-            $class = self::$services[$name]['class'];
-            $service = self::make($class);
-            foreach (self::$services[$name]['options'] as $option => $value) {
-                $service->setOption($option, $value);
-            }
-            $service->init();
-            self::$services[$name]['object'] = $service;
-        }
-        $object = self::$services[$name]['object'];
-        return $rawObject ? $object : $object->service();
+        return self::container()->get($name, $rawObject);
+    }
+
+    /**
+     * @param $name
+     * @param bool|false $returnData
+     */
+    public static function has($name, $returnData = false)
+    {
+        return self::container()->has($name, $returnData);
     }
 
     /**
@@ -88,7 +92,7 @@ class Core
     public static function __callStatic($name, $args)
     {
         $service = self::get($name, true);
-        return call_user_func_array(array($service, 'service'), $args);
+        return ($service instanceof Service) ?call_user_func_array(array($service, 'service'), $args) : $service;
     }
 
     /**
