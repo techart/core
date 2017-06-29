@@ -129,7 +129,7 @@ class Types
 		}
 
 		$className = str_replace('.', '\\', trim($className, '.'));
-		return '\\'. $className;
+		return '\\'. ltrim($className, '\\');
 	}
 
 	/**
